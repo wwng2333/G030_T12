@@ -1,0 +1,17 @@
+*.log
+*.log.lock
+*.axf
+*.html
+*.d
+*.o
+*.iex
+*.sct
+*.dep
+*.lnp
+*.htm
+*.hex
+*.scvd
+/MDK-ARM/G030_T12/
+/MDK-ARM/G030_T12.uvguix.*
+/MDK-ARM/*.yml
+/MDK-ARM/*.uvoptx
