@@ -19,7 +19,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
-#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "gpio.h"
@@ -62,7 +61,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+uint16_t encoder_value = 200, tim_now, tim_last;
 /* USER CODE END 0 */
 
 /**
@@ -97,7 +96,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_ADC1_Init();
   MX_TIM1_Init();
   MX_TIM16_Init();
@@ -106,7 +104,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	SEGGER_RTT_Init();
 	SEGGER_RTT_printf(0, "Hello world!\r\n");
-	int16_t encoder_value = 0, tmp;
 	LL_TIM_EnableCounter(TIM1);
 	LL_TIM_EnableAllOutputs(TIM1);
 	LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
@@ -117,23 +114,28 @@ int main(void)
 	u8g2_Setup_ssd1306_128x64_noname_f(&u8g2, U8G2_R0, u8x8_byte_4wire_hw_spi, u8x8_stm32_gpio_and_delay);
 	u8g2_InitDisplay(&u8g2);
 	u8g2_SetPowerSave(&u8g2, 0);
+	tim_last = LL_TIM_GetCounter(TIM1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		u8g2_FirstPage(&u8g2);	
-    do
-    {
-			draw(&u8g2);
-    } while (u8g2_NextPage(&u8g2));
-		tmp = LL_TIM_GetCounter(TIM1);
-		if(tmp != encoder_value)
+		MainScreen(&u8g2);
+		tim_now = LL_TIM_GetCounter(TIM1);
+		if(tim_last != tim_now)
 		{
-			encoder_value = tmp;
-			printf("encoder = %d now!\r\n", encoder_value);
+			if(tim_last > tim_now)
+			{
+				encoder_value += 5;
+			}
+			else
+			{
+				encoder_value -= 5;
+			}
+			tim_last = tim_now;
 		}
+
 //		LL_TIM_EnableCounter(TIM2);
 //		LL_mDelay(500);
 //		LL_TIM_DisableCounter(TIM2);
@@ -189,8 +191,31 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-int stdout_putchar (int ch) {
+
+int stdout_putchar (int ch) 
+{
   return (SEGGER_RTT_PutChar(0, ch));
+}
+
+void MainScreen(u8g2_t *u8g2) 
+{
+	char sprintf_tmp[8] = {0};
+	u8g2_FirstPage(u8g2);
+	u8g2_SetFontMode(u8g2, 1);
+	u8g2_SetFontDirection(u8g2, 0);
+	do
+	{
+		u8g2_SetFont(u8g2, u8g2_font_9x15_te);
+		u8g2_DrawStr(u8g2, 0, 10, "SET:");
+		u8g2_DrawStr(u8g2, 40, 10, "200");
+		u8g2_DrawStr(u8g2, 83, 10, "  OFF");
+		u8g2_DrawStr(u8g2, 0, 62, "T12-KU");
+		u8g2_DrawStr(u8g2, 83, 62, "24.2V");
+		
+		u8g2_SetFont(u8g2, u8g2_font_freedoomr25_mn);
+		sprintf(sprintf_tmp, "%d", encoder_value);
+		u8g2_DrawStr(u8g2, 37, 45, sprintf_tmp);
+	} while (u8g2_NextPage(u8g2));
 }
 /* USER CODE END 4 */
 

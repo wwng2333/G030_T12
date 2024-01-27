@@ -29,7 +29,6 @@ extern "C" {
 /* Includes ------------------------------------------------------------------*/
 
 #include "stm32g0xx_ll_adc.h"
-#include "stm32g0xx_ll_dma.h"
 #include "stm32g0xx_ll_rcc.h"
 #include "stm32g0xx_ll_bus.h"
 #include "stm32g0xx_ll_system.h"
@@ -37,6 +36,7 @@ extern "C" {
 #include "stm32g0xx_ll_cortex.h"
 #include "stm32g0xx_ll_utils.h"
 #include "stm32g0xx_ll_pwr.h"
+#include "stm32g0xx_ll_dma.h"
 #include "stm32g0xx_ll_spi.h"
 #include "stm32g0xx_ll_tim.h"
 #include "stm32g0xx_ll_gpio.h"
@@ -47,6 +47,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stdbool.h"
+#include "u8g2.h"
 
 /* USER CODE END Includes */
 
@@ -89,6 +91,7 @@ void Error_Handler(void);
 #define SPI1_CS_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
+void MainScreen(u8g2_t *u8g2);
 
 /* USER CODE END Private defines */
 
