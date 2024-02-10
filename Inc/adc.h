@@ -39,7 +39,7 @@ extern "C" {
 void MX_ADC1_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-
+void Activate_ADC(void);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
