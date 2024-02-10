@@ -149,7 +149,7 @@ uint8_t   goneSeconds;
 uint8_t   SensorCounter = 255;
 
 /* USER CODE END PD */
-
+void getChipTemp(void);
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
@@ -170,7 +170,7 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 uint16_t encoder_value = 200, tim_now, tim_last;
-uint16_t ADC_Buf[2] = {0};
+uint16_t ADC_Buf[4] = {0};
 
 uint16_t map(uint16_t value, uint16_t inMin, uint16_t inMax, uint16_t outMin, uint16_t outMax) 
 {
@@ -220,21 +220,20 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC1_Init();
-  MX_TIM1_Init();
   MX_TIM16_Init();
   MX_SPI1_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 	Activate_ADC();
 	LL_DMA_ConfigAddresses(DMA1, LL_DMA_CHANNEL_1, LL_ADC_DMA_GetRegAddr(ADC1, LL_ADC_DMA_REG_REGULAR_DATA), (uint32_t)&ADC_Buf, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
-	LL_DMA_SetDataLength(DMA1,LL_DMA_CHANNEL_1, 2);
+	LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_1, 4);
 	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_1);
 	SEGGER_RTT_Init();
 	SEGGER_RTT_printf(0, "Hello world!\r\n");
-	LL_TIM_EnableCounter(TIM1);
-	LL_TIM_EnableAllOutputs(TIM1);
-	LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
-	LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH2);
+//	LL_TIM_EnableCounter(TIM1);
+//	LL_TIM_EnableAllOutputs(TIM1);
+//	LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH1);
+//	LL_TIM_CC_EnableChannel(TIM1, LL_TIM_CHANNEL_CH2);
 	LL_TIM_EnableAllOutputs(TIM2);
 	LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH1);
 	LL_TIM_DisableCounter(TIM16);
@@ -254,22 +253,23 @@ int main(void)
   {
 		LL_ADC_REG_StartConversion(ADC1);
 		LL_ADC_REG_SetDMATransfer(ADC1, LL_ADC_REG_DMA_TRANSFER_UNLIMITED);
+        getChipTemp();
 		MainScreen(&u8g2);
-		tim_now = LL_TIM_GetCounter(TIM1);
-		if(tim_last != tim_now)
-		{
-			if(tim_last > tim_now)
-			{
-				encoder_value += 5;
-				LL_TIM_EnableCounter(TIM16);
-			}
-			else
-			{
-				encoder_value -= 5;
-				LL_TIM_DisableCounter(TIM16);
-			}
-			tim_last = tim_now;
-		}
+//		tim_now = LL_TIM_GetCounter(TIM1);
+//		if(tim_last != tim_now)
+//		{
+//			if(tim_last > tim_now)
+//			{
+//				encoder_value += 5;
+//				LL_TIM_EnableCounter(TIM16);
+//			}
+//			else
+//			{
+//				encoder_value -= 5;
+//				LL_TIM_DisableCounter(TIM16);
+//			}
+//			tim_last = tim_now;
+//		}
 		LL_mDelay(10);
 //		LL_TIM_EnableCounter(TIM2);
 //		LL_mDelay(500);
@@ -352,6 +352,13 @@ void MainScreen(u8g2_t *u8g2)
 		sprintf(sprintf_tmp, "%d", encoder_value);
 		u8g2_DrawStr(u8g2, 37, 45, sprintf_tmp);
 	} while (u8g2_NextPage(u8g2));
+}
+
+void getChipTemp(void)
+{
+    uint32_t ADC_VCC;
+    ADC_VCC = __LL_ADC_CALC_VREFANALOG_VOLTAGE(ADC_Buf[2], LL_ADC_RESOLUTION_12B); //
+    ChipTemp = __LL_ADC_CALC_TEMPERATURE(ADC_VCC, ADC_Buf[1], LL_ADC_RESOLUTION_12B);
 }
 /* USER CODE END 4 */
 
