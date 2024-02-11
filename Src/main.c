@@ -149,7 +149,7 @@ uint8_t   goneSeconds;
 uint8_t   SensorCounter = 255;
 
 /* USER CODE END PD */
-void getChipTemp(void);
+
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
@@ -164,7 +164,7 @@ static u8g2_t u8g2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+void getChipTemp(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
