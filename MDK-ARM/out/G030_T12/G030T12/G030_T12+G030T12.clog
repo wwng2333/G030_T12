@@ -1,0 +1,18 @@
+# CMSIS Build Audit File generated on 2024-02-14T18:43:35
+
+# Project Description File: c:/Users/Robin Lu/Desktop/G030-T12/MDK-ARM/G030_T12+G030T12.cprj
+
+# Toolchain Configuration File: C:/Users/Robin Lu/.vcpkg/artifacts/2139c4c6/tools.open.cmsis.pack.cmsis.toolbox/2.2.1/etc/AC6.6.18.0.cmake
+
+# Package: ARM::CMSIS@6.0.0
+  Location: C:\Users\Robin Lu\AppData\Local\arm\packs/ARM/CMSIS/6.0.0/
+
+  * Component: ARM::CMSIS:CORE@6.0.0
+
+# Package: Keil::ARM_Compiler@1.7.2
+  Location: C:\Users\Robin Lu\AppData\Local\arm\packs/Keil/ARM_Compiler/1.7.2/
+
+  * Component: Keil::Compiler&ARM Compiler:I/O:STDOUT&User@1.2.0
+
+# Package: Keil::STM32G0xx_DFP@1.5.0
+  Location: C:\Users\Robin Lu\AppData\Local\arm\packs/Keil/STM32G0xx_DFP/1.5.0/
